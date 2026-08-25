@@ -41,7 +41,11 @@ def create_room():
     db.session.add(new_player)
     db.session.commit()
 
-    # Store the player's information in the session
+    # Make the creator the host
+    new_room.host_id = new_player.id
+    db.session.commit()
+
+    # Store player information in the session
     session["room_code"] = room_code
     session["player_id"] = new_player.id
 
@@ -57,25 +61,33 @@ def exit_room():
 
         if player:
             room_id = player.room_id
+            room = Room.query.get(room_id)
 
-            # Remove the player
-            db.session.delete(player)
-            db.session.commit()
+            if room:
+                # Check if the player leaving is the host
+                if room.host_id == player.id:
 
-            # Check whether anyone is left
-            remaining_players = Player.query.filter_by(
-                room_id=room_id
-            ).count()
+                    # Find the other players in the room
+                    other_players = Player.query.filter(
+                        Player.room_id == room_id,
+                        Player.id != player.id
+                    ).all()
 
-            # Delete the room if nobody remains
-            if remaining_players == 0:
-                room = Room.query.get(room_id)
+                    if other_players:
+                        # Give the host position to another player
+                        new_host = other_players[0]
+                        room.host_id = new_host.id
 
-                if room:
-                    db.session.delete(room)
-                    db.session.commit()
+                    else:
+                        # No players remain, so delete the room
+                        db.session.delete(room)
 
-    # Clear the player's room information
+                # Delete the player who is leaving
+                db.session.delete(player)
+
+                db.session.commit()
+
+    # Clear this player's session
     session.pop("player_id", None)
     session.pop("room_code", None)
 

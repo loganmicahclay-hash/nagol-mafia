@@ -11,7 +11,13 @@
     <h3>Players</h3>
 
     {% for player in room.players %}
-        <p>{{ player.username }}</p>
+
+    {% if player.id == room.host_id %}
+      <p>{{ player.username }} 👑</p>
+    {% else %}
+      <p>{{ player.username }}</p>
+    {% endif %}
+
     {% endfor %}
 
     <a href="{{ url_for('rooms.exit_room') }}">
