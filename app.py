@@ -1,11 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask
 
 app = Flask(__name__)
 
+app.secret_key = "your-secret-key"
 
-@app.route("/")
-def home():
-    return render_template("home.html")
+from routes.main import main
+app.register_blueprint(main)
 
 
 if __name__ == "__main__":
