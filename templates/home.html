@@ -16,7 +16,7 @@
     {% if username %}
     <p>Welcome, {{ username }}!</p>
     <div class="room-options">
-        <a href="">
+        <a href="{{ url_for('rooms.create_room') }}">
             <button type="button">Create Room</button>
         </a>
 

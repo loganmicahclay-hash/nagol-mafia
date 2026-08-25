@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="room-page">
+
+    <h1>Lobby</h1>
+
+    <h2>{{ room_code }}</h2>
+
+    <a href="{{ url_for('rooms.exit_room') }}">
+        <button type="button">Exit Room</button>
+    </a>
+
+</div>
+
+{% endblock %}
