@@ -137,3 +137,41 @@ def room():
         return redirect(url_for("main.home"))
 
     return render_template("room.html", room=room)
+
+
+@rooms.route("/room/players")
+def player_list():
+
+    room_code = session.get("room_code")
+
+    if not room_code:
+        return "", 204
+
+    room = Room.query.filter_by(room_code=room_code).first()
+
+    if not room:
+        return "", 204
+
+    return render_template(
+        "partials/player_list.html",
+        room=room
+    )
+
+
+@rooms.route("/room/game-settings")
+def game_settings():
+
+    room_code = session.get("room_code")
+
+    if not room_code:
+        return "", 204
+
+    room = Room.query.filter_by(room_code=room_code).first()
+
+    if not room:
+        return "", 204
+
+    return render_template(
+        "partials/game_settings.html",
+        room=room
+    )

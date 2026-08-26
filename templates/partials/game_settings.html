@@ -1,0 +1,63 @@
+{% if session.get("player_id") == room.host_id %}
+
+    <div class="game-settings">
+
+        <h2>Game Settings</h2>
+
+        {% if room.players|length >= 4 %}
+
+            <label for="mafia_count">Mafia:</label>
+
+            <select id="mafia_count" name="mafia_count">
+
+                {% set max_mafia = (room.players|length - 1) // 2 %}
+
+                {% for count in range(1, max_mafia + 1) %}
+
+                    <option value="{{ count }}">
+                        {{ count }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <label for="round_count">Rounds:</label>
+
+            <select id="round_count" name="round_count">
+
+                {% for rounds in range(1, 11) %}
+
+                    <option value="{{ rounds }}">
+                        {{ rounds }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <button type="button">
+                Start Game
+            </button>
+
+        {% else %}
+
+            <p>
+                You need at least 4 players to start the game.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+{% else %}
+
+    <div class="waiting-message">
+
+        <p>Waiting for the host to start the game...</p>
+
+    </div>
+
+{% endif %}
