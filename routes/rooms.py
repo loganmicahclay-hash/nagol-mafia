@@ -2,11 +2,53 @@ from flask import Blueprint, render_template, redirect, url_for, session, reques
 import random
 
 from database import db
+from datetime import datetime, timedelta
 from models.room import Room
 from models.player import Player
 
 
 rooms = Blueprint("rooms", __name__)
+
+
+def remove_player(player):
+
+    room = Room.query.get(player.room_id)
+
+    if not room:
+        db.session.delete(player)
+        return
+
+    # Find all other players before removing this one
+    other_players = Player.query.filter(
+        Player.room_id == room.id,
+        Player.id != player.id
+    ).order_by(Player.id).all()
+
+    # If the leaving player is the host, pass the crown
+    if room.host_id == player.id and other_players:
+        room.host_id = other_players[0].id
+
+    # Remove the player
+    db.session.delete(player)
+
+    # If nobody else remains, remove the room
+    if not other_players:
+        db.session.delete(room)
+
+
+def remove_disconnected_players(room):
+
+    timeout = datetime.utcnow() - timedelta(seconds=10)
+
+    disconnected_players = Player.query.filter(
+        Player.room_id == room.id,
+        Player.last_seen < timeout
+    ).all()
+
+    for player in disconnected_players:
+        remove_player(player)
+
+    db.session.commit()
 
 
 @rooms.route("/create-room")
@@ -54,38 +96,15 @@ def create_room():
 
 @rooms.route("/exit-room")
 def exit_room():
+
     player_id = session.get("player_id")
 
     if player_id:
-        player = Player.query.get(player_id)
+        player = db.session.get(Player, player_id)
 
         if player:
-            room_id = player.room_id
-            room = Room.query.get(room_id)
-
-            if room:
-                # Check if the player leaving is the host
-                if room.host_id == player.id:
-
-                    # Find the other players in the room
-                    other_players = Player.query.filter(
-                        Player.room_id == room_id,
-                        Player.id != player.id
-                    ).all()
-
-                    if other_players:
-                        # Give the host position to another player
-                        new_host = other_players[0]
-                        room.host_id = new_host.id
-
-                    else:
-                        # No players remain, so delete the room
-                        db.session.delete(room)
-
-                # Delete the player who is leaving
-                db.session.delete(player)
-
-                db.session.commit()
+            remove_player(player)
+            db.session.commit()
 
     # Clear this player's session
     session.pop("player_id", None)
@@ -145,12 +164,14 @@ def player_list():
     room_code = session.get("room_code")
 
     if not room_code:
-        return "", 204
+        return ""
 
     room = Room.query.filter_by(room_code=room_code).first()
 
     if not room:
-        return "", 204
+        return ""
+
+    remove_disconnected_players(room)
 
     return render_template(
         "partials/player_list.html",
@@ -171,7 +192,29 @@ def game_settings():
     if not room:
         return "", 204
 
+    remove_disconnected_players(room)
+
     return render_template(
         "partials/game_settings.html",
         room=room
     )
+
+
+@rooms.route("/room/heartbeat", methods=["POST"])
+def heartbeat():
+
+    player_id = session.get("player_id")
+
+    if not player_id:
+        return "", 204
+
+    player = Player.query.get(player_id)
+
+    if not player:
+        return "", 204
+
+    player.last_seen = datetime.utcnow()
+
+    db.session.commit()
+
+    return "", 204
