@@ -1,4 +1,5 @@
 from database import db
+from datetime import datetime
 
 
 class Player(db.Model):
@@ -9,6 +10,11 @@ class Player(db.Model):
         db.Integer,
         db.ForeignKey("room.id"),
         nullable=False
+    )
+
+    last_seen = db.Column(
+        db.DateTime, 
+        default=datetime.utcnow
     )
 
     def __repr__(self):

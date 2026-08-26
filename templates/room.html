@@ -32,4 +32,12 @@
 
 </div>
 
+<script>
+    setInterval(function() {
+        fetch("{{ url_for('rooms.heartbeat') }}", {
+            method: "POST"
+        });
+    }, 5000);
+</script>
+
 {% endblock %}
