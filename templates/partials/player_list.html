@@ -1,0 +1,15 @@
+<div class="players-list">
+
+    <h3>Players ({{ room.players|length }})</h3>
+
+    {% for player in room.players %}
+
+        {% if player.id == room.host_id %}
+            <p>{{ player.username }} 👑</p>
+        {% else %}
+            <p>{{ player.username }}</p>
+        {% endif %}
+
+    {% endfor %}
+
+</div>

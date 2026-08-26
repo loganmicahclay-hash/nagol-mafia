@@ -6,19 +6,25 @@
 
     <h1>Lobby</h1>
 
-    <h2>{{ room.room_code }}</h2>
+    <h2>Room Code: {{ room.room_code }}</h2>
 
-    <h3>Players</h3>
+    <div id="player-list" hx-get="{{ url_for('rooms.player_list') }}" hx-trigger="every 2s" hx-swap="innerHTML">
 
-    {% for player in room.players %}
+        {% include "partials/player_list.html" %}
 
-    {% if player.id == room.host_id %}
-      <p>{{ player.username }} 👑</p>
-    {% else %}
-      <p>{{ player.username }}</p>
-    {% endif %}
+    </div>
 
-    {% endfor %}
+
+    <div id="game-settings"
+         hx-get="{{ url_for('rooms.game_settings') }}" 
+         hx-trigger="every 2s" 
+         hx-swap="innerHTML"
+    >
+
+        {% include "partials/game_settings.html" %}
+
+    </div>
+
 
     <a href="{{ url_for('rooms.exit_room') }}">
         <button type="button">Exit Room</button>
