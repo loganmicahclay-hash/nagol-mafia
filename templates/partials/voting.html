@@ -1,0 +1,73 @@
+{% if player.is_alive %}
+
+    {% if has_voted %}
+
+        <div class="voting-waiting">
+
+            <h2>Vote Submitted</h2>
+
+            <p>
+                Waiting for the other players...
+            </p>
+
+        </div>
+
+    {% else %}
+
+        <div class="voting-section">
+
+            <h2>Vote</h2>
+
+            <form
+                method="POST"
+                action="{{ url_for('rooms.submit_vote') }}"
+            >
+
+                <div class="voting-list">
+
+                    {% for game_player in room.players %}
+
+                        {% if game_player.is_alive and game_player.id != player.id %}
+
+                            <label class="vote-option">
+
+                                <input
+                                    type="radio"
+                                    name="target_id"
+                                    value="{{ game_player.id }}"
+                                    required
+                                >
+
+                                <span>
+                                    {{ game_player.username }}
+                                </span>
+
+                            </label>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+                <button type="submit">
+                    Submit Vote
+                </button>
+
+            </form>
+
+        </div>
+
+    {% endif %}
+
+{% else %}
+
+    <div class="eliminated-message">
+
+        <h2>You have been eliminated.</h2>
+
+        <p>You can no longer vote.</p>
+
+    </div>
+
+{% endif %}

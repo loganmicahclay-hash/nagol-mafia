@@ -1,6 +1,8 @@
 <div class="players-list">
 
-    <h3>Players ({{ room.players|length }})</h3>
+    <h3 id="player-count" data-count="{{ room.players|length }}">
+        Players ({{ room.players|length }})
+    </h3>
 
     {% for player in room.players %}
 

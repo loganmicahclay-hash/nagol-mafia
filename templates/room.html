@@ -8,36 +8,277 @@
 
     <h2>Room Code: {{ room.room_code }}</h2>
 
-    <div id="player-list" hx-get="{{ url_for('rooms.player_list') }}" hx-trigger="every 2s" hx-swap="innerHTML">
+
+    <!-- -------------------------------- -->
+    <!-- GAME STATUS -->
+    <!-- -------------------------------- -->
+
+    <div
+        id="game-status"
+        hx-get="{{ url_for('rooms.game_status') }}"
+        hx-trigger="every 2s"
+        hx-swap="none"
+    >
+    </div>
+
+
+    <!-- -------------------------------- -->
+    <!-- LIVE PLAYER LIST -->
+    <!-- -------------------------------- -->
+
+    <div
+        id="player-list"
+        hx-get="{{ url_for('rooms.player_list') }}"
+        hx-trigger="every 2s"
+        hx-swap="innerHTML"
+    >
 
         {% include "partials/player_list.html" %}
 
     </div>
 
 
-    <div id="game-settings"
-         hx-get="{{ url_for('rooms.game_settings') }}" 
-         hx-trigger="every 2s" 
-         hx-swap="innerHTML"
-    >
+    <!-- -------------------------------- -->
+    <!-- GAME SETTINGS -->
+    <!-- -------------------------------- -->
+
+    <div id="game-settings">
 
         {% include "partials/game_settings.html" %}
 
     </div>
 
 
+    <!-- -------------------------------- -->
+    <!-- HOST STATUS CHECK -->
+    <!-- -------------------------------- -->
+
+    <div
+        id="host-status"
+        hx-get="{{ url_for('rooms.host_status') }}"
+        hx-trigger="every 2s"
+        hx-swap="none"
+    >
+    </div>
+
+
+    <!-- -------------------------------- -->
+    <!-- EXIT ROOM -->
+    <!-- -------------------------------- -->
+
     <a href="{{ url_for('rooms.exit_room') }}">
-        <button type="button">Exit Room</button>
+        <button type="button">
+            Exit Room
+        </button>
     </a>
 
 </div>
 
+
 <script>
+
+    // --------------------------------
+    // GAME SETTINGS
+    // --------------------------------
+
+    function updateGameSettings() {
+
+        const playerCountElement =
+            document.getElementById("player-count");
+
+        if (!playerCountElement) {
+            return;
+        }
+
+        const playerCount = parseInt(
+            playerCountElement.dataset.count,
+            10
+        );
+
+        if (isNaN(playerCount)) {
+            return;
+        }
+
+        const form =
+            document.getElementById("game-settings-form");
+
+        const message =
+            document.getElementById(
+                "minimum-players-message"
+            );
+
+        const mafiaSelect =
+            document.getElementById("mafia_count");
+
+        if (!form || !message || !mafiaSelect) {
+            return;
+        }
+
+
+        // Show or hide the settings
+        if (playerCount >= 4) {
+
+            form.hidden = false;
+            message.hidden = true;
+
+        } else {
+
+            form.hidden = true;
+            message.hidden = false;
+
+        }
+
+
+        // --------------------------------
+        // UPDATE MAFIA OPTIONS
+        // --------------------------------
+
+        const currentValue = mafiaSelect.value;
+
+        const maxMafia = Math.floor(
+            (playerCount - 1) / 2
+        );
+
+        mafiaSelect.innerHTML = "";
+
+
+        for (
+            let count = 1;
+            count <= maxMafia;
+            count++
+        ) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = count;
+            option.textContent = count;
+
+            mafiaSelect.appendChild(option);
+
+        }
+
+
+        // Keep previous selection if valid
+        if (
+            currentValue >= 1 &&
+            currentValue <= maxMafia
+        ) {
+
+            mafiaSelect.value = currentValue;
+
+        }
+
+    }
+
+
+    // --------------------------------
+    // INITIAL SETTINGS CHECK
+    // --------------------------------
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        updateGameSettings
+    );
+
+
+    // --------------------------------
+    // UPDATE AFTER PLAYER LIST CHANGES
+    // --------------------------------
+
+    document.body.addEventListener(
+        "htmx:afterSwap",
+        function(event) {
+
+            if (
+                event.detail.target.id ===
+                "player-list"
+            ) {
+
+                updateGameSettings();
+
+            }
+
+        }
+    );
+
+
+    // --------------------------------
+    // HOST STATUS
+    // --------------------------------
+
+    let currentHostStatus = null;
+
+
+    document.body.addEventListener(
+        "htmx:afterRequest",
+        function(event) {
+
+            const requestedPath =
+                event.detail.pathInfo.requestPath;
+
+            const hostStatusPath =
+                "{{ url_for('rooms.host_status') }}";
+
+
+            if (
+                requestedPath !== hostStatusPath
+            ) {
+
+                return;
+
+            }
+
+
+            const status =
+                event.detail.xhr.responseText;
+
+
+            if (!status) {
+                return;
+            }
+
+
+            // First response
+            if (currentHostStatus === null) {
+
+                currentHostStatus = status;
+
+                return;
+
+            }
+
+
+            // Host status changed
+            if (
+                status !== currentHostStatus
+            ) {
+
+                currentHostStatus = status;
+
+                window.location.reload();
+
+            }
+
+        }
+    );
+
+
+    // --------------------------------
+    // HEARTBEAT
+    // --------------------------------
+
     setInterval(function() {
-        fetch("{{ url_for('rooms.heartbeat') }}", {
-            method: "POST"
-        });
+
+        fetch(
+            "{{ url_for('rooms.heartbeat') }}",
+            {
+                method: "POST"
+            }
+        );
+
     }, 5000);
+
 </script>
 
 {% endblock %}
