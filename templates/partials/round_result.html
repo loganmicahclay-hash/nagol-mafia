@@ -1,0 +1,46 @@
+{% if room.round_result %}
+
+<div class="round-result">
+
+    <h2>Vote Result</h2>
+
+    <p>{{ room.round_result }}</p>
+
+    {% if room.game_over %}
+
+        <h2>Game Over</h2>
+
+        {% if room.winner == "mafia" %}
+            <p>👹 The Mafia win!</p>
+        {% else %}
+            <p>🏘️ The Villagers win!</p>
+        {% endif %}
+
+    {% else %}
+
+        {% if session.get("player_id") == room.host_id %}
+
+            <form
+                method="POST"
+                action="{{ url_for('rooms.next_round') }}"
+            >
+
+                <button type="submit">
+                    Next Round
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <p>
+                Waiting for the host to continue...
+            </p>
+
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endif %}

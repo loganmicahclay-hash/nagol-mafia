@@ -6,6 +6,22 @@
 
     <h1>Nagol Mofia</h1>
 
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="game-message">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% if message %}
+    <div class="game-message">
+        {{ message }}
+    </div>
+    {% endif %}
+
     <form method="POST">
         <label for="username">Enter Username</label>
         <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" required>
@@ -27,5 +43,15 @@
     {% endif %}
 
 </div>
+
+{% if message %}
+<script>
+    window.history.replaceState(
+        {},
+        document.title,
+        window.location.pathname
+    );
+</script>
+{% endif %}
 
 {% endblock %}

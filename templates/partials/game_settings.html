@@ -1,63 +1,67 @@
 {% if session.get("player_id") == room.host_id %}
 
-    <div class="game-settings">
+<div class="game-settings">
 
-        <h2>Game Settings</h2>
+    <h2>Game Settings</h2>
 
-        {% if room.players|length >= 4 %}
+    <p
+        id="minimum-players-message"
+        {% if room.players|length >= 4 %}hidden{% endif %}
+    >
+        You need at least 4 players to start the game.
+    </p>
 
-            <label for="mafia_count">Mafia:</label>
+    <form
+        id="game-settings-form"
+        method="POST"
+        action="{{ url_for('rooms.start_game') }}"
+        {% if room.players|length < 4 %}hidden{% endif %}
+    >
 
-            <select id="mafia_count" name="mafia_count">
+        <label for="mafia_count">Mafia:</label>
 
-                {% set max_mafia = (room.players|length - 1) // 2 %}
+        <select id="mafia_count" name="mafia_count">
 
-                {% for count in range(1, max_mafia + 1) %}
+            {% set max_mafia = (room.players|length - 1) // 2 %}
 
-                    <option value="{{ count }}">
-                        {{ count }}
-                    </option>
+            {% for count in range(1, max_mafia + 1) %}
+                <option value="{{ count }}">
+                    {{ count }}
+                </option>
+            {% endfor %}
 
-                {% endfor %}
-
-            </select>
-
-
-            <label for="round_count">Rounds:</label>
-
-            <select id="round_count" name="round_count">
-
-                {% for rounds in range(1, 11) %}
-
-                    <option value="{{ rounds }}">
-                        {{ rounds }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
+        </select>
 
 
-            <button type="button">
-                Start Game
-            </button>
+        <label for="game_mode">Game Mode:</label>
 
-        {% else %}
+        <select id="game_mode" name="game_mode">
 
-            <p>
-                You need at least 4 players to start the game.
-            </p>
+            <option value="elimination">
+                Elimination Mode
+            </option>
 
-        {% endif %}
+            <option value="one_shot">
+                One-Shot Mode
+            </option>
 
-    </div>
+        </select>
+
+
+        <button type="submit">
+            Start Game
+        </button>
+
+    </form>
+
+</div>
 
 {% else %}
 
-    <div class="waiting-message">
+<div class="waiting-message">
 
-        <p>Waiting for the host to start the game...</p>
+    <p>Waiting for the host to start the game...</p>
 
-    </div>
+</div>
 
 {% endif %}

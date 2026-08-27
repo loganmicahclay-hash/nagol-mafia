@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="game-page">
+
+    <h1>Mafia</h1>
+
+    <h2>Your Role</h2>
+
+    {% if player.role == "mafia" %}
+        <p>You are the Mafia 👹</p>
+    {% else %}
+        <p>You are a Villager 🏘️</p>
+    {% endif %}
+
+
+    <div id="voting-area">
+
+        {% include "partials/voting.html" %}
+
+    </div>
+
+
+    <div
+        id="vote-status"
+        hx-get="{{ url_for('rooms.vote_status') }}"
+        hx-trigger="every 2s"
+        hx-swap="innerHTML"
+    >
+
+        <p>
+            {{ votes_submitted }} / {{ living_players }}
+            players have voted.
+        </p>
+
+    </div>
+
+    <div
+        id="round-result"
+        hx-get="{{ url_for('rooms.round_result', round=room.round_number) }}"
+        hx-trigger="every 2s"
+        hx-swap="innerHTML"
+    >
+        {% include "partials/round_result.html" %}
+    </div>
+
+</div>
+
+<a href="{{ url_for('rooms.exit_room') }}">
+    <button type="button">Exit Room</button>
+</a>
+
+<script>
+
+    // Keep the player connected while in the game
+    setInterval(function() {
+
+        fetch("{{ url_for('rooms.heartbeat') }}", {
+            method: "POST"
+        });
+
+    }, 5000);
+
+</script>
+
+{% endblock %}
