@@ -10,3 +10,226 @@ h1 {
 .room-page {
     text-align: center;
 }
+
+.container {
+  display: flex;
+  justify-content: center; /* horizontal */
+}
+
+/* =========================
+   Nagol Mofia - Home Page
+   ========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #2b1b4e 0%, #151525 45%, #0b0b12 100%);
+    color: #ffffff;
+}
+
+/* Main page */
+
+.home-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+/* Game title */
+
+.home-page h1 {
+    margin: 20px 0 45px;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-align: center;
+    color: #ffffff;
+    text-shadow:
+        0 0 10px rgba(170, 90, 255, 0.8),
+        0 0 30px rgba(170, 90, 255, 0.5);
+}
+
+/* Containers / cards */
+
+.container {
+    width: min(90%, 450px);
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px);
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    text-align: center;
+}
+
+/* Username form */
+
+.container form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.container label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #eeeeee;
+}
+
+/* Input */
+
+.container input {
+    width: 100%;
+    padding: 14px 16px;
+
+    border: 2px solid transparent;
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+
+    font-size: 1rem;
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.container input::placeholder {
+    color: #9999a8;
+}
+
+.container input:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.35);
+}
+
+/* Buttons */
+
+button {
+    padding: 13px 22px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: linear-gradient(135deg, #9333ea, #6d28d9);
+    color: white;
+
+    font-size: 1rem;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Messages */
+
+.game-message {
+    width: min(90%, 450px);
+    margin-bottom: 20px;
+    padding: 14px 18px;
+
+    border-radius: 10px;
+
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+
+    color: #fca5a5;
+
+    text-align: center;
+    font-weight: bold;
+
+    animation: messageAppear 0.3s ease;
+}
+
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Welcome message */
+
+.container p {
+    margin: 0 0 25px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+/* Create / Join buttons */
+
+.room-options {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.room-options a {
+    flex: 1;
+    text-decoration: none;
+}
+
+.room-options button {
+    width: 100%;
+}
+
+/* Different color for Join Room */
+
+.room-options a:last-child button {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.room-options a:last-child button:hover {
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+/* Mobile */
+
+@media (max-width: 500px) {
+    .home-page {
+        padding: 30px 15px;
+    }
+
+    .home-page h1 {
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+    }
+
+    .container {
+        padding: 22px;
+    }
+
+    .room-options {
+        flex-direction: column;
+    }
+}

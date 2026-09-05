@@ -7,40 +7,53 @@
     <h1>Nagol Mofia</h1>
 
     {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for message in messages %}
-    <div class="game-message">
-        {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="game-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
 
     {% if message %}
-    <div class="game-message">
-        {{ message }}
-    </div>
+        <div class="game-message">
+            {{ message }}
+        </div>
     {% endif %}
 
-    <form method="POST">
-        <label for="username">Enter Username</label>
-        <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" required>
+    <div class="container">
+        <form method="POST">
+            <label for="username">Enter Username</label>
 
-        <button type="submit">Continue</button>
-    </form>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Username"
+                autocomplete="off"
+                required
+            >
 
-    {% if username %}
-    <p>Welcome, {{ username }}!</p>
-    <div class="room-options">
-        <a href="{{ url_for('rooms.create_room') }}">
-            <button type="button">Create Room</button>
-        </a>
-
-        <a href="{{ url_for('rooms.join_room') }}">
-            <button type="button">Join Room</button>
-        </a>
+            <button type="submit">Continue</button>
+        </form>
     </div>
-    {% endif %}
+
+    <div class="container">
+        {% if username %}
+            <p>Welcome, {{ username }}!</p>
+
+            <div class="room-options">
+                <a href="{{ url_for('rooms.create_room') }}">
+                    <button type="button">Create Room</button>
+                </a>
+
+                <a href="{{ url_for('rooms.join_room') }}">
+                    <button type="button">Join Room</button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
 
 </div>
 
