@@ -1,23 +1,5 @@
-body {
-    background-color: #000229;
-    color: #eee;
-}
-
-h1 {
-    text-align: center;
-}
-
-.room-page {
-    text-align: center;
-}
-
-.container {
-  display: flex;
-  justify-content: center; /* horizontal */
-}
-
 /* =========================
-   Nagol Mofia - Home Page
+   Nagol Mofia - Global Styles
    ========================= */
 
 * {
@@ -33,7 +15,14 @@ body {
     color: #ffffff;
 }
 
-/* Main page */
+h1 {
+    text-align: center;
+}
+
+
+/* =========================
+   Home Page
+   ========================= */
 
 .home-page {
     min-height: 100vh;
@@ -42,6 +31,7 @@ body {
     align-items: center;
     padding: 60px 20px;
 }
+
 
 /* Game title */
 
@@ -57,15 +47,23 @@ body {
         0 0 30px rgba(170, 90, 255, 0.5);
 }
 
-/* Containers / cards */
+
+/* =========================
+   Containers / Cards
+   ========================= */
 
 .container {
     width: min(90%, 450px);
     padding: 30px;
+    margin-bottom: 20px;
+
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 18px;
+
     background: rgba(255, 255, 255, 0.07);
+
     backdrop-filter: blur(12px);
+
     box-shadow:
         0 15px 40px rgba(0, 0, 0, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -73,23 +71,30 @@ body {
     text-align: center;
 }
 
-/* Username form */
 
-.container form {
+/* =========================
+   Forms
+   ========================= */
+
+.container form,
+.join-room-page form {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
 
-.container label {
+.container label,
+.join-room-page label {
     font-size: 1.1rem;
     font-weight: bold;
     color: #eeeeee;
 }
 
-/* Input */
 
-.container input {
+/* Inputs */
+
+.container input,
+.join-room-page input {
     width: 100%;
     padding: 14px 16px;
 
@@ -105,16 +110,21 @@ body {
     transition: 0.2s ease;
 }
 
-.container input::placeholder {
+.container input::placeholder,
+.join-room-page input::placeholder {
     color: #9999a8;
 }
 
-.container input:focus {
+.container input:focus,
+.join-room-page input:focus {
     border-color: #a855f7;
     box-shadow: 0 0 15px rgba(168, 85, 247, 0.35);
 }
 
-/* Buttons */
+
+/* =========================
+   Buttons
+   ========================= */
 
 button {
     padding: 13px 22px;
@@ -123,8 +133,8 @@ button {
     border-radius: 10px;
 
     background: linear-gradient(135deg, #9333ea, #6d28d9);
-    color: white;
 
+    color: white;
     font-size: 1rem;
     font-weight: bold;
 
@@ -146,11 +156,15 @@ button:active {
     transform: translateY(0);
 }
 
-/* Messages */
+
+/* =========================
+   Messages
+   ========================= */
 
 .game-message {
     width: min(90%, 450px);
     margin-bottom: 20px;
+
     padding: 14px 18px;
 
     border-radius: 10px;
@@ -178,15 +192,22 @@ button:active {
     }
 }
 
-/* Welcome message */
+
+/* =========================
+   Welcome Message
+   ========================= */
 
 .container p {
     margin: 0 0 25px;
+
     font-size: 1.3rem;
     font-weight: bold;
 }
 
-/* Create / Join buttons */
+
+/* =========================
+   Create / Join Buttons
+   ========================= */
 
 .room-options {
     display: flex;
@@ -203,6 +224,7 @@ button:active {
     width: 100%;
 }
 
+
 /* Different color for Join Room */
 
 .room-options a:last-child button {
@@ -213,9 +235,110 @@ button:active {
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
 }
 
-/* Mobile */
+
+/* =========================
+   Join Room Page
+   ========================= */
+
+.join-room-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px 20px;
+}
+
+
+/* Join Room title */
+
+.join-room-page h1 {
+    margin: 0 0 30px;
+
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: 3px;
+
+    color: #ffffff;
+
+    text-shadow:
+        0 0 10px rgba(170, 90, 255, 0.8),
+        0 0 30px rgba(170, 90, 255, 0.5);
+}
+
+
+/* Join Room form */
+
+.join-room-page form {
+    width: min(90%, 450px);
+
+    padding: 30px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* Room code input */
+
+.join-room-page input {
+    text-align: center;
+
+    font-size: 1.5rem;
+    font-weight: bold;
+
+    letter-spacing: 6px;
+}
+
+
+/* Flash messages on Join Room */
+
+.join-room-page > p {
+    width: min(90%, 450px);
+
+    margin: 20px 0 0;
+    padding: 14px 18px;
+
+    border-radius: 10px;
+
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+
+    color: #fca5a5;
+
+    text-align: center;
+    font-weight: bold;
+}
+
+
+/* Home button */
+
+.join-room-page > a {
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+.join-room-page > a button {
+    min-width: 150px;
+}
+
+
+/* =========================
+   Mobile
+   ========================= */
 
 @media (max-width: 500px) {
+
     .home-page {
         padding: 30px 15px;
     }
@@ -232,4 +355,870 @@ button:active {
     .room-options {
         flex-direction: column;
     }
+
+    .join-room-page {
+        padding: 30px 15px;
+    }
+
+    .join-room-page h1 {
+        margin-bottom: 25px;
+        letter-spacing: 2px;
+    }
+
+    .join-room-page form {
+        padding: 22px;
+    }
+
+    .join-room-page input {
+        font-size: 1.3rem;
+    }
+}
+
+/* =========================
+   Waiting Room / Lobby
+   ========================= */
+
+.room-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 50px 20px;
+}
+
+
+/* =========================
+   Lobby Header
+   ========================= */
+
+.room-page > h1 {
+    margin: 10px 0 8px;
+
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 3px;
+
+    color: #ffffff;
+
+    text-shadow:
+        0 0 10px rgba(170, 90, 255, 0.8),
+        0 0 30px rgba(170, 90, 255, 0.5);
+}
+
+
+/* Room Code */
+
+.room-page > h2 {
+    margin: 0 0 30px;
+
+    padding: 12px 25px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    color: #c4b5fd;
+
+    font-size: 1.35rem;
+    letter-spacing: 2px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================
+   Player List
+   ========================= */
+
+.players-list {
+    width: min(90%, 600px);
+
+    padding: 25px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* Player count */
+
+.players-list h3 {
+    margin: 0 0 20px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    color: #c4b5fd;
+
+    font-size: 1.4rem;
+
+    text-align: center;
+}
+
+
+/* Individual players */
+
+.players-list p {
+    margin: 8px 0;
+    padding: 12px 15px;
+
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.2);
+
+    color: #eeeeee;
+
+    font-size: 1.05rem;
+    font-weight: 600;
+
+    text-align: left;
+
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+
+/* Player hover */
+
+.players-list p:hover {
+    background: rgba(168, 85, 247, 0.12);
+    transform: translateX(3px);
+}
+
+
+/* =========================
+   Game Settings
+   ========================= */
+
+.game-settings {
+    width: min(90%, 600px);
+
+    padding: 25px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* Settings title */
+
+.game-settings h2 {
+    margin: 0 0 20px;
+
+    color: #ffffff;
+
+    font-size: 1.5rem;
+
+    text-align: center;
+}
+
+
+/* Settings form */
+
+#game-settings-form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* Settings labels */
+
+#game-settings-form label {
+    margin-top: 5px;
+
+    color: #eeeeee;
+
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+
+/* Settings dropdowns */
+
+#game-settings-form select {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border: 2px solid transparent;
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    color: #ffffff;
+
+    font-size: 1rem;
+
+    outline: none;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+/* Dropdown focus */
+
+#game-settings-form select:focus {
+    border-color: #a855f7;
+
+    box-shadow:
+        0 0 15px rgba(168, 85, 247, 0.35);
+}
+
+
+/* Dropdown options */
+
+#game-settings-form select option {
+    background: #151525;
+    color: #ffffff;
+}
+
+
+/* Start Game button */
+
+#game-settings-form button {
+    margin-top: 10px;
+
+    background:
+        linear-gradient(135deg, #9333ea, #6d28d9);
+}
+
+#game-settings-form button:hover {
+    box-shadow:
+        0 8px 20px rgba(147, 51, 234, 0.4);
+}
+
+
+/* =========================
+   Minimum Player Message
+   ========================= */
+
+#minimum-players-message {
+    margin: 0;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    background: rgba(245, 158, 11, 0.12);
+
+    border: 1px solid rgba(245, 158, 11, 0.35);
+
+    color: #fcd34d;
+
+    text-align: center;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   Waiting Message
+   ========================= */
+
+.waiting-message {
+    width: min(90%, 600px);
+
+    margin-bottom: 20px;
+
+    padding: 20px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    text-align: center;
+}
+
+
+.waiting-message p {
+    margin: 0;
+
+    color: #c4b5fd;
+
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+
+/* =========================
+   Exit Room
+   ========================= */
+
+.room-page > a {
+    margin-top: 5px;
+
+    text-decoration: none;
+}
+
+
+.room-page > a button {
+    min-width: 160px;
+
+    background:
+        linear-gradient(135deg, #dc2626, #991b1b);
+}
+
+
+.room-page > a button:hover {
+    box-shadow:
+        0 8px 20px rgba(220, 38, 38, 0.4);
+}
+
+
+/* =========================
+   Mobile Lobby
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .room-page {
+        padding: 30px 15px;
+    }
+
+    .room-page > h1 {
+        letter-spacing: 2px;
+    }
+
+    .room-page > h2 {
+        font-size: 1.1rem;
+        padding: 10px 18px;
+
+        margin-bottom: 25px;
+    }
+
+    .players-list,
+    .game-settings,
+    .waiting-message {
+        width: 100%;
+
+        padding: 20px;
+    }
+
+    .players-list h3 {
+        font-size: 1.25rem;
+    }
+}
+
+/* =========================
+   Mafia Game Page
+   ========================= */
+
+.game-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 45px 20px 30px;
+}
+
+
+/* =========================
+   Game Header
+   ========================= */
+
+.game-page > h1 {
+    margin: 10px 0 5px;
+
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+
+    color: #ffffff;
+
+    text-shadow:
+        0 0 10px rgba(170, 90, 255, 0.8),
+        0 0 30px rgba(170, 90, 255, 0.5);
+}
+
+
+/* Your Role */
+
+.game-page > h2 {
+    margin: 5px 0 10px;
+
+    color: #c4b5fd;
+
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+
+/* Role text */
+
+.game-page > p {
+    margin: 0 0 30px;
+
+    font-size: 1.3rem;
+    font-weight: bold;
+
+    color: #ffffff;
+}
+
+
+/* =========================
+   Voting Area
+   ========================= */
+
+#voting-area {
+    width: min(90%, 600px);
+
+    margin-bottom: 20px;
+}
+
+
+/* Voting section */
+
+.voting-section {
+    width: 100%;
+
+    padding: 25px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* Vote heading */
+
+.voting-section h2 {
+    margin: 0 0 20px;
+
+    color: #ffffff;
+
+    font-size: 1.5rem;
+
+    text-align: center;
+}
+
+
+/* =========================
+   Voting Form
+   ========================= */
+
+.voting-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* Player voting list */
+
+.voting-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* =========================
+   Vote Options
+   ========================= */
+
+.vote-option {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+
+    padding: 14px 16px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.2);
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Hide default radio appearance */
+
+.vote-option input {
+    margin-right: 12px;
+
+    width: 18px;
+    height: 18px;
+
+    accent-color: #a855f7;
+
+    cursor: pointer;
+}
+
+
+/* Player name */
+
+.vote-option span {
+    color: #eeeeee;
+
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+
+/* Hover */
+
+.vote-option:hover {
+    background: rgba(168, 85, 247, 0.12);
+
+    border-color: rgba(168, 85, 247, 0.4);
+
+    transform: translateX(3px);
+}
+
+
+/* Selected player */
+
+.vote-option:has(input:checked) {
+    background: rgba(168, 85, 247, 0.18);
+
+    border-color: #a855f7;
+
+    box-shadow:
+        0 0 12px rgba(168, 85, 247, 0.2);
+}
+
+
+/* =========================
+   Submit Vote
+   ========================= */
+
+.voting-section button {
+    width: 100%;
+
+    margin-top: 5px;
+
+    background:
+        linear-gradient(135deg, #9333ea, #6d28d9);
+}
+
+.voting-section button:hover {
+    box-shadow:
+        0 8px 20px rgba(147, 51, 234, 0.4);
+}
+
+
+/* =========================
+   Vote Submitted
+   ========================= */
+
+.voting-waiting {
+    width: 100%;
+
+    padding: 25px;
+
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 18px;
+
+    background: rgba(168, 85, 247, 0.08);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.3);
+
+    text-align: center;
+}
+
+
+.voting-waiting h2 {
+    margin: 0 0 10px;
+
+    color: #c4b5fd;
+
+    font-size: 1.5rem;
+}
+
+
+.voting-waiting p {
+    margin: 0;
+
+    color: #eeeeee;
+
+    font-size: 1rem;
+}
+
+
+/* =========================
+   Vote Status
+   ========================= */
+
+#vote-status {
+    width: min(90%, 600px);
+
+    margin-bottom: 20px;
+}
+
+
+#vote-status p {
+    margin: 0;
+
+    padding: 14px 18px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    color: #c4b5fd;
+
+    text-align: center;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   Eliminated Player
+   ========================= */
+
+.eliminated-message {
+    width: 100%;
+
+    padding: 25px;
+
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 18px;
+
+    background: rgba(239, 68, 68, 0.08);
+
+    text-align: center;
+}
+
+
+.eliminated-message h2 {
+    margin: 0 0 10px;
+
+    color: #fca5a5;
+
+    font-size: 1.5rem;
+}
+
+
+.eliminated-message p {
+    margin: 0;
+
+    color: #eeeeee;
+}
+
+
+/* =========================
+   Round Result
+   ========================= */
+
+#round-result {
+    width: min(90%, 600px);
+
+    margin-bottom: 20px;
+}
+
+
+.round-result {
+    width: 100%;
+
+    padding: 25px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    text-align: center;
+}
+
+
+.round-result h2 {
+    margin: 0 0 15px;
+
+    color: #ffffff;
+
+    font-size: 1.5rem;
+}
+
+
+.round-result p {
+    margin: 10px 0;
+
+    color: #eeeeee;
+
+    font-size: 1.05rem;
+}
+
+
+/* =========================
+   Game Over
+   ========================= */
+
+.round-result h2:nth-of-type(2) {
+    margin-top: 25px;
+
+    color: #c4b5fd;
+
+    font-size: 1.8rem;
+}
+
+
+/* =========================
+   Next Round
+   ========================= */
+
+.round-result form {
+    margin-top: 20px;
+}
+
+
+.round-result form button {
+    min-width: 180px;
+
+    background:
+        linear-gradient(135deg, #9333ea, #6d28d9);
+}
+
+
+.round-result form button:hover {
+    box-shadow:
+        0 8px 20px rgba(147, 51, 234, 0.4);
+}
+
+
+/* =========================
+   Exit Room
+   ========================= */
+
+body > a:last-of-type {
+    display: block;
+
+    width: fit-content;
+
+    margin: 0 auto 30px;
+
+    text-decoration: none;
+}
+
+
+body > a:last-of-type button {
+    min-width: 160px;
+
+    background:
+        linear-gradient(135deg, #dc2626, #991b1b);
+}
+
+
+body > a:last-of-type button:hover {
+    box-shadow:
+        0 8px 20px rgba(220, 38, 38, 0.4);
+}
+
+
+/* =========================
+   Mobile Game
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .game-page {
+        padding: 30px 15px 20px;
+    }
+
+    .game-page > h1 {
+        letter-spacing: 2px;
+    }
+
+    .game-page > h2 {
+        font-size: 1.1rem;
+    }
+
+    .game-page > p {
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+    }
+
+    #voting-area,
+    #vote-status,
+    #round-result {
+        width: 100%;
+    }
+
+    .voting-section,
+    .voting-waiting,
+    .round-result {
+        padding: 20px;
+    }
+
+    .vote-option {
+        padding: 13px;
+    }
+}
+.game-page > a {
+    margin-top: 5px;
+    text-decoration: none;
+}
+
+.game-page > a button {
+    min-width: 160px;
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+}
+
+.game-page > a button:hover {
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
 }
