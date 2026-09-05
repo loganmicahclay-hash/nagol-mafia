@@ -1,20 +1,60 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <script src="https://unpkg.com/htmx.org@2.0.6"></script>
 
     <title>{% block title %}Nagol Mofia{% endblock %}</title>
-
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
+    <button id="theme-toggle" class="theme-toggle" type="button">
+        ☀️ Light Mode
+    </button>
+
     {% block body %}
     {% endblock %}
 
+    <script>
+        const themeToggle = document.getElementById("theme-toggle");
+
+        // Load saved theme, defaulting to dark mode
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme === "light") {
+            document.body.classList.add("light-mode");
+        }
+
+        function updateThemeButton() {
+            if (document.body.classList.contains("light-mode")) {
+                themeToggle.textContent = "🌙 Dark Mode";
+            } else {
+                themeToggle.textContent = "☀️ Light Mode";
+            }
+        }
+
+        updateThemeButton();
+
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("light-mode");
+
+            if (document.body.classList.contains("light-mode")) {
+                localStorage.setItem("theme", "light");
+            } else {
+                localStorage.setItem("theme", "dark");
+            }
+
+            updateThemeButton();
+        });
+    </script>
+
 </body>
+
 </html>
