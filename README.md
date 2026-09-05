@@ -84,6 +84,12 @@ Or:
 cd Documents
 ```
 
+Or:
+
+```bash
+cd projects
+```
+
 You can check what folder you're currently in with:
 
 ```bash
