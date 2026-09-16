@@ -2,42 +2,50 @@
 
 {% block body %}
 
-    <button id="theme-toggle" class="theme-toggle" type="button">
-        ☀️ Light Mode
+<button id="settings-button" class="settings-button" type="button">
+    ⚙️ Settings
+</button>
+
+<div id="settings-panel" class="settings-panel">
+    <h2>Settings</h2>
+
+    <div class="setting">
+        <span>Theme</span>
+        <button id="settings-theme-toggle" type="button">
+            ☀️ Light Mode
+        </button>
+    </div>
+
+    <button id="close-settings" class="close-settings" type="button">
+        Close
     </button>
+</div>
 
 <div class="home-page">
 
     <h1>Nagol Mofia</h1>
 
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="game-message">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="game-message">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     {% if message %}
-        <div class="game-message">
-            {{ message }}
-        </div>
+    <div class="game-message">
+        {{ message }}
+    </div>
     {% endif %}
 
     <div class="container">
         <form method="POST">
             <label for="username">Enter Username</label>
 
-            <input
-                type="text"
-                id="username"
-                name="username"
-                placeholder="Username"
-                autocomplete="off"
-                required
-            >
+            <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" required>
 
             <button type="submit">Continue</button>
         </form>
@@ -45,17 +53,17 @@
 
     <div class="container">
         {% if username %}
-            <p>Welcome, {{ username }}!</p>
+        <p>Welcome, {{ username }}!</p>
 
-            <div class="room-options">
-                <a href="{{ url_for('rooms.create_room') }}">
-                    <button type="button">Create Room</button>
-                </a>
+        <div class="room-options">
+            <a href="{{ url_for('rooms.create_room') }}">
+                <button type="button">Create Room</button>
+            </a>
 
-                <a href="{{ url_for('rooms.join_room') }}">
-                    <button type="button">Join Room</button>
-                </a>
-            </div>
+            <a href="{{ url_for('rooms.join_room') }}">
+                <button type="button">Join Room</button>
+            </a>
+        </div>
         {% endif %}
     </div>
 
@@ -71,37 +79,84 @@
 </script>
 {% endif %}
 
-    <script>
-        const themeToggle = document.getElementById("theme-toggle");
+<script>
+    const settingsThemeToggle = document.getElementById("settings-theme-toggle");
 
-        // Load saved theme, defaulting to dark mode
-        const savedTheme = localStorage.getItem("theme");
+    const settingsButton = document.getElementById("settings-button");
+    const settingsPanel = document.getElementById("settings-panel");
+    const closeSettings = document.getElementById("close-settings");
 
-        if (savedTheme === "light") {
-            document.body.classList.add("light-mode");
+
+    // =========================
+    // Load Saved Theme
+    // =========================
+
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "light") {
+        document.body.classList.add("light-mode");
+    }
+
+
+    // =========================
+    // Update Theme Button
+    // =========================
+
+    function updateThemeButton() {
+
+        if (document.body.classList.contains("light-mode")) {
+            settingsThemeToggle.textContent = "🌙 Dark Mode";
+        } else {
+            settingsThemeToggle.textContent = "☀️ Light Mode";
         }
 
-        function updateThemeButton() {
-            if (document.body.classList.contains("light-mode")) {
-                themeToggle.textContent = "🌙 Dark Mode";
-            } else {
-                themeToggle.textContent = "☀️ Light Mode";
-            }
+    }
+
+
+    // =========================
+    // Toggle Theme
+    // =========================
+
+    function toggleTheme() {
+
+        document.body.classList.toggle("light-mode");
+
+        if (document.body.classList.contains("light-mode")) {
+            localStorage.setItem("theme", "light");
+        } else {
+            localStorage.setItem("theme", "dark");
         }
 
         updateThemeButton();
+    }
 
-        themeToggle.addEventListener("click", () => {
-            document.body.classList.toggle("light-mode");
 
-            if (document.body.classList.contains("light-mode")) {
-                localStorage.setItem("theme", "light");
-            } else {
-                localStorage.setItem("theme", "dark");
-            }
+    // =========================
+    // Theme Button
+    // =========================
 
-            updateThemeButton();
-        });
-    </script>
+    settingsThemeToggle.addEventListener("click", toggleTheme);
+
+
+    // =========================
+    // Settings Panel
+    // =========================
+
+    settingsButton.addEventListener("click", () => {
+        settingsPanel.classList.toggle("open");
+    });
+
+
+    closeSettings.addEventListener("click", () => {
+        settingsPanel.classList.remove("open");
+    });
+
+
+    // =========================
+    // Initial Setup
+    // =========================
+
+    updateThemeButton();
+</script>
 
 {% endblock %}

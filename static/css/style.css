@@ -522,6 +522,212 @@ button:active {
 
 
 /* =========================
+   Settings Button
+   ========================= */
+
+.settings-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+
+    padding: 10px 16px;
+
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+
+    background: var(--card-background);
+    color: var(--text);
+
+    backdrop-filter: blur(12px);
+
+    font-size: 0.9rem;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: 0 8px 25px var(--shadow);
+
+    transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.settings-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px var(--shadow);
+}
+
+
+/* =========================
+   Mobile Settings Button
+   ========================= */
+
+@media (max-width: 500px) {
+
+    .settings-button {
+        top: 12px;
+        right: 12px;
+
+        padding: 8px 12px;
+
+        font-size: 0.8rem;
+    }
+}
+
+
+/* =========================
+   Settings Panel
+   ========================= */
+
+.settings-panel {
+    position: fixed;
+
+    top: 75px;
+    right: 20px;
+
+    z-index: 999;
+
+    width: 300px;
+
+    padding: 25px;
+
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+
+    background: var(--card-background);
+
+    backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 15px 40px var(--shadow),
+        inset 0 1px 0 var(--glass-highlight);
+
+    color: var(--text);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(-10px);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+}
+
+
+/* =========================
+   Open Settings Panel
+   ========================= */
+
+.settings-panel.open {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateY(0);
+}
+
+
+/* =========================
+   Settings Title
+   ========================= */
+
+.settings-panel h2 {
+    margin: 0 0 20px;
+
+    color: var(--text);
+
+    text-align: center;
+}
+
+
+/* =========================
+   Setting
+   ========================= */
+
+.setting {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 15px 0;
+
+    border-top: 1px solid var(--subtle-border);
+    border-bottom: 1px solid var(--subtle-border);
+}
+
+.setting span {
+    color: var(--secondary-text);
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   Settings Theme Button
+   ========================= */
+
+#settings-theme-toggle {
+    padding: 9px 12px;
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================
+   Close Settings
+   ========================= */
+
+.close-settings {
+    width: 100%;
+
+    margin-top: 20px;
+
+    background:
+        linear-gradient(135deg, #555555, #333333);
+}
+
+.close-settings:hover {
+    box-shadow:
+        0 8px 20px var(--shadow);
+}
+
+
+/* =========================
+   Mobile Settings
+   ========================= */
+
+@media (max-width: 500px) {
+
+    .settings-button {
+        top: 12px;
+        right: 115px;
+
+        padding: 8px 12px;
+
+        font-size: 0.8rem;
+    }
+
+    .settings-panel {
+        top: 65px;
+        right: 12px;
+
+        width: calc(100% - 24px);
+
+        max-width: 350px;
+    }
+}
+
+
+/* =========================
    Waiting Room / Lobby
    ========================= */
 
