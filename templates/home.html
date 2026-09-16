@@ -2,6 +2,10 @@
 
 {% block body %}
 
+    <button id="theme-toggle" class="theme-toggle" type="button">
+        ☀️ Light Mode
+    </button>
+
 <div class="home-page">
 
     <h1>Nagol Mofia</h1>
@@ -66,5 +70,38 @@
     );
 </script>
 {% endif %}
+
+    <script>
+        const themeToggle = document.getElementById("theme-toggle");
+
+        // Load saved theme, defaulting to dark mode
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme === "light") {
+            document.body.classList.add("light-mode");
+        }
+
+        function updateThemeButton() {
+            if (document.body.classList.contains("light-mode")) {
+                themeToggle.textContent = "🌙 Dark Mode";
+            } else {
+                themeToggle.textContent = "☀️ Light Mode";
+            }
+        }
+
+        updateThemeButton();
+
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("light-mode");
+
+            if (document.body.classList.contains("light-mode")) {
+                localStorage.setItem("theme", "light");
+            } else {
+                localStorage.setItem("theme", "dark");
+            }
+
+            updateThemeButton();
+        });
+    </script>
 
 {% endblock %}
