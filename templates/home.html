@@ -79,6 +79,7 @@
 </script>
 {% endif %}
 
+
 <script>
     const settingsThemeToggle = document.getElementById("settings-theme-toggle");
 
@@ -86,76 +87,51 @@
     const settingsPanel = document.getElementById("settings-panel");
     const closeSettings = document.getElementById("close-settings");
 
-
-    // =========================
     // Load Saved Theme
-    // =========================
-
-    const savedTheme = localStorage.getItem("theme");
+    const savedTheme = localStorage.getItem("nagol-mofia-theme");
 
     if (savedTheme === "light") {
         document.body.classList.add("light-mode");
+    } else {
+        document.body.classList.remove("light-mode");
     }
 
-
-    // =========================
     // Update Theme Button
-    // =========================
-
     function updateThemeButton() {
-
         if (document.body.classList.contains("light-mode")) {
             settingsThemeToggle.textContent = "🌙 Dark Mode";
         } else {
             settingsThemeToggle.textContent = "☀️ Light Mode";
         }
-
     }
 
-
-    // =========================
     // Toggle Theme
-    // =========================
-
     function toggleTheme() {
-
         document.body.classList.toggle("light-mode");
 
-        if (document.body.classList.contains("light-mode")) {
-            localStorage.setItem("theme", "light");
-        } else {
-            localStorage.setItem("theme", "dark");
-        }
+        const isLight = document.body.classList.contains("light-mode");
+
+        localStorage.setItem(
+            "nagol-mofia-theme",
+            isLight ? "light" : "dark"
+        );
 
         updateThemeButton();
     }
 
-
-    // =========================
     // Theme Button
-    // =========================
-
     settingsThemeToggle.addEventListener("click", toggleTheme);
 
-
-    // =========================
     // Settings Panel
-    // =========================
-
     settingsButton.addEventListener("click", () => {
         settingsPanel.classList.toggle("open");
     });
-
 
     closeSettings.addEventListener("click", () => {
         settingsPanel.classList.remove("open");
     });
 
-
-    // =========================
     // Initial Setup
-    // =========================
-
     updateThemeButton();
 </script>
 
