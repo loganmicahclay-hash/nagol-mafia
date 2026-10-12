@@ -8,16 +8,6 @@ source ~/.venvs/nagol-mofia/bin/activate
 
 ***
 
-## Virtual Environment Logan
-
-### Linux
-
-```bash
-source ~/.venvs/nagol-mofia/bin/activate
-```
-
-***
-
 # Nagol Mofia
 
 Nagol Mofia is a personal sandbox project where I'm experimenting with web development and building a multiplayer version of the social deduction game Mafia.
