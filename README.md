@@ -8,13 +8,13 @@ source ~/.venvs/nagol-mofia/bin/activate
 
 ***
 
-# Nagol Mofia
+# Nagol Mafia
 
-Nagol Mofia is a personal sandbox project where I'm experimenting with web development and building a multiplayer version of the social deduction game Mafia.
+Nagol Mafia is a personal sandbox project where I'm experimenting with web development and building a multiplayer version of the social deduction game Mafia.
 
 The project is built with Python, Flask, SQLAlchemy, SQLite, HTML, CSS, and HTMX. It supports room creation, player roles, voting, and multiple game modes.
 
-This project is currently under development and is primarily intended for learning, experimentation, and testing with friends.
+This project is currently under development and is primarily intended for learning and experimentation.
 
 ## Features
 
@@ -92,11 +92,7 @@ source .venv/bin/activate
 
 ### 3. Install Dependencies
 
-```bash
-pip install Flask Flask-SQLAlchemy
-```
-
-If a `requirements.txt` file is available, install the project's listed dependencies instead:
+Install the project's dependencies using the provided requirements file:
 
 ```bash
 pip install -r requirements.txt
@@ -123,7 +119,7 @@ deactivate
 ## Project Structure
 
 ```text
-nagol-mofia/
+nagol-mafia/
 ├── README.md
 ├── app.py
 ├── database.py
@@ -145,7 +141,7 @@ nagol-mofia/
 
 ## Development Status
 
-Nagol Mofia is an ongoing personal project. Features, gameplay rules, and the user interface may change as development continues.
+Nagol Mafia is an ongoing personal project. Features, gameplay rules, and the user interface may change as development continues.
 
 The application is currently configured for local development and is not yet intended to be a production-ready public game server. The development database may be reset when the application starts, so persistent game data should not be expected.
 
