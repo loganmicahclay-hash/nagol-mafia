@@ -188,3 +188,122 @@ def test_start_game_assigns_roles(client):
     assert roles.count("mafia") == 1
     assert roles.count("villager") == 3
     assert all(player.is_alive for player in players)
+
+
+def test_invalid_mafia_count_does_not_start_game(client):
+    # Create a room as the host.
+    with client.session_transaction() as session:
+        session["username"] = "TestHost"
+
+    client.get("/create-room")
+
+    # Get the room code.
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    # Add three more players.
+    for username in ["Player2", "Player3", "Player4"]:
+        with client.session_transaction() as session:
+            session["username"] = username
+
+        client.post(
+            "/join-room",
+            data={"room_code": room_code},
+        )
+
+    # Restore the host's session.
+    host = db.session.execute(
+        db.select(Player).where(
+            Player.username == "TestHost"
+        )
+    ).scalar_one()
+
+    with client.session_transaction() as session:
+        session["username"] = "TestHost"
+        session["player_id"] = host.id
+        session["room_code"] = room_code
+
+    # Try starting with zero Mafia players.
+    response = client.post(
+        "/start-game",
+        data={
+            "mafia_count": 0,
+            "game_mode": "elimination",
+        },
+    )
+
+    assert response.status_code == 302
+
+    # The game should remain unstarted.
+    room = db.session.execute(
+        db.select(Room)
+    ).scalar_one()
+
+    assert room.game_started is False
+
+    # No roles should have been assigned.
+    players = db.session.execute(
+        db.select(Player).where(
+            Player.room_id == room.id
+        )
+    ).scalars().all()
+
+    assert all(player.role is None for player in players)
+
+
+def test_too_many_mafia_players_does_not_start_game(client):
+    # Create a room as the host.
+    with client.session_transaction() as session:
+        session["username"] = "TestHost"
+
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    # Add three more players.
+    for username in ["Player2", "Player3", "Player4"]:
+        with client.session_transaction() as session:
+            session["username"] = username
+
+        client.post(
+            "/join-room",
+            data={"room_code": room_code},
+        )
+
+    # Restore the host's session.
+    host = db.session.execute(
+        db.select(Player).where(
+            Player.username == "TestHost"
+        )
+    ).scalar_one()
+
+    with client.session_transaction() as session:
+        session["username"] = "TestHost"
+        session["player_id"] = host.id
+        session["room_code"] = room_code
+
+    # Two Mafia players are invalid for a four-player game.
+    response = client.post(
+        "/start-game",
+        data={
+            "mafia_count": 2,
+            "game_mode": "elimination",
+        },
+    )
+
+    assert response.status_code == 302
+
+    room = db.session.execute(
+        db.select(Room)
+    ).scalar_one()
+
+    assert room.game_started is False
+
+    players = db.session.execute(
+        db.select(Player).where(
+            Player.room_id == room.id
+        )
+    ).scalars().all()
+
+    assert all(player.role is None for player in players)
