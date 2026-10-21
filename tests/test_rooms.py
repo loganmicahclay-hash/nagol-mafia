@@ -307,3 +307,188 @@ def test_too_many_mafia_players_does_not_start_game(client):
     ).scalars().all()
 
     assert all(player.role is None for player in players)
+
+
+def test_player_cannot_join_after_game_starts(client):
+    # Create a room as the host.
+    with client.session_transaction() as session:
+        session["username"] = "TestHost"
+
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    # Add three players so the game can start.
+    for username in ["Player2", "Player3", "Player4"]:
+        with client.session_transaction() as session:
+            session["username"] = username
+
+        client.post(
+            "/join-room",
+            data={"room_code": room_code},
+        )
+
+    # Find the host.
+    room = db.session.execute(
+        db.select(Room).where(Room.room_code == room_code)
+    ).scalar_one()
+
+    host = next(
+        player for player in room.players
+        if player.username == "TestHost"
+    )
+
+    # Start the game as the host.
+    with client.session_transaction() as session:
+        session["username"] = host.username
+        session["player_id"] = host.id
+        session["room_code"] = room_code
+
+    client.post(
+        "/start-game",
+        data={
+            "mafia_count": 1,
+            "game_mode": "elimination",
+        },
+    )
+
+    # Attempt to join as a fifth player.
+    with client.session_transaction() as session:
+        session["username"] = "LatePlayer"
+        session.pop("player_id", None)
+        session.pop("room_code", None)
+
+    response = client.post(
+        "/join-room",
+        data={"room_code": room_code},
+    )
+
+    # The player should be rejected and shown the join page.
+    assert response.status_code == 200
+    assert b"That game has already started." in response.data
+
+    # Verify that no fifth player was added.
+    room = db.session.get(Room, room.id)
+    assert len(room.players) == 4
+    assert all(
+        player.username != "LatePlayer"
+        for player in room.players
+    )
+
+
+def test_player_cannot_join_cancelled_room(client):
+    # Create a room as the host.
+    with client.session_transaction() as session:
+        session["username"] = "TestHost"
+
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    # Add another player.
+    with client.session_transaction() as session:
+        session["username"] = "Player2"
+
+    client.post(
+        "/join-room",
+        data={"room_code": room_code},
+    )
+
+    # Mark the room as canceled.
+    room = db.session.execute(
+        db.select(Room).where(Room.room_code == room_code)
+    ).scalar_one()
+
+    room.game_cancelled = True
+    room.game_cancel_reason = "Test cancellation"
+    db.session.commit()
+
+    # Attempt to join as a new player.
+    with client.session_transaction() as session:
+        session["username"] = "LatePlayer"
+        session.pop("player_id", None)
+        session.pop("room_code", None)
+
+    response = client.post(
+        "/join-room",
+        data={"room_code": room_code},
+    )
+
+    # The join should be rejected.
+    assert response.status_code == 200
+    assert b"Room not found or is no longer active." in response.data
+
+    # Verify that no new player was added.
+    room = db.session.get(Room, room.id)
+    assert len(room.players) == 2
+    assert all(
+        player.username != "LatePlayer"
+        for player in room.players
+    )
+
+
+def test_player_cannot_access_another_rooms_lobby(client):
+    # Create Room A.
+    with client.session_transaction() as session:
+        session["username"] = "PlayerA"
+
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_a_code = session["room_code"]
+        player_a_id = session["player_id"]
+
+    # Create Room B using a separate player session.
+    with client.session_transaction() as session:
+        session.clear()
+        session["username"] = "PlayerB"
+
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_b_code = session["room_code"]
+
+    # Simulate Player A trying to access Room B.
+    with client.session_transaction() as session:
+        session["username"] = "PlayerA"
+        session["player_id"] = player_a_id
+        session["room_code"] = room_b_code
+
+    response = client.get("/room", follow_redirects=False)
+
+    # A secure route should reject the mismatched membership.
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/")
+
+
+def test_player_cannot_access_game_with_wrong_room_code(client):
+    # Create PlayerA's room.
+    with client.session_transaction() as session:
+        session["username"] = "PlayerA"
+
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        player_a_id = session["player_id"]
+
+    # Create PlayerB's room.
+    with client.session_transaction() as session:
+        session.clear()
+        session["username"] = "PlayerB"
+
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_b_code = session["room_code"]
+
+    # Give PlayerA the wrong room code.
+    with client.session_transaction() as session:
+        session["player_id"] = player_a_id
+        session["room_code"] = room_b_code
+
+    response = client.get("/game", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith("/")

@@ -28,7 +28,7 @@ rooms = Blueprint("rooms", __name__)
 
 def remove_player(player):
 
-    room = Room.query.get(player.room_id)
+    room = db.session.get(Room, player.room_id)
 
     if not room:
         db.session.delete(player)
@@ -306,6 +306,17 @@ def room():
         return redirect(
             url_for("main.home")
         )
+
+    # Verify that the current player belongs to this room.
+    player_id = session.get("player_id")
+
+    player = db.session.get(Player, player_id) if player_id else None
+
+    if not player or player.room_id != room.id:
+        session.pop("room_code", None)
+        session.pop("player_id", None)
+
+        return redirect(url_for("main.home"))
 
     # If game already started,
     # send the player to the game.
@@ -603,6 +614,15 @@ def game():
             url_for("main.home")
         )
 
+    # Verify that the session room matches the player's actual room.
+    if session.get("room_code") != room.room_code:
+        session.pop("room_code", None)
+        session.pop("player_id", None)
+
+        return redirect(
+            url_for("main.home")
+        )
+
     # If the game was cancelled
     if room.game_cancelled:
 
@@ -732,6 +752,12 @@ def submit_vote():
     if not room.game_started:
         return redirect(
             url_for("rooms.room")
+        )
+
+    # Don't allow voting after the game ends
+    if room.game_over:
+        return redirect(
+            url_for("rooms.game")
         )
 
     # Don't allow voting after cancellation
