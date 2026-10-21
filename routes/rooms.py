@@ -12,7 +12,7 @@ from flask import (
 import random
 
 from database import db
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 from models.room import Room
 from models.player import Player
@@ -87,7 +87,7 @@ def remove_player(player):
 
 def remove_disconnected_players(room):
 
-    timeout = datetime.utcnow() - timedelta(seconds=10)
+    timeout = datetime.now(UTC) - timedelta(seconds=10)
 
     disconnected_players = Player.query.filter(
         Player.room_id == room.id,
@@ -418,7 +418,7 @@ def heartbeat():
     if not player:
         return "", 204
 
-    player.last_seen = datetime.utcnow()
+    player.last_seen = datetime.now(UTC)
 
     db.session.commit()
 
@@ -549,7 +549,7 @@ def start_game():
             game_player.role = "villager"
 
         game_player.is_alive = True
-        game_player.last_seen = datetime.utcnow()
+        game_player.last_seen = datetime.now(UTC)
 
     # Reset game information
     room.round_number = 1

@@ -1,5 +1,5 @@
 from database import db
-from datetime import datetime
+from datetime import datetime, UTC
 
 
 class Player(db.Model):
@@ -14,8 +14,8 @@ class Player(db.Model):
     )
 
     last_seen = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
+        db.DateTime, 
+        default=lambda: datetime.now(UTC)
     )
 
     # Game information
