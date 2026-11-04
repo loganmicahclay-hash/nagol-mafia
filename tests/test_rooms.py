@@ -492,3 +492,43 @@ def test_player_cannot_access_game_with_wrong_room_code(client):
 
     assert response.status_code == 302
     assert response.location.endswith("/")
+
+
+def test_player_cannot_access_another_rooms_game(client):
+    # Create Room A as Player A.
+    client.post("/", data={"username": "PlayerA"})
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        player_a_id = session["player_id"]
+
+    # Create Room B as Player B.
+    with client.session_transaction() as session:
+        session.clear()
+
+    client.post("/", data={"username": "PlayerB"})
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_b_code = session["room_code"]
+
+    # Give Player A Room B's room code.
+    with client.session_transaction() as session:
+        session["player_id"] = player_a_id
+        session["room_code"] = room_b_code
+
+    # Attempt to access Room B's game.
+    response = client.get("/game", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith("/")
+
+
+def test_player_cannot_access_game_before_start(client):
+    client.post("/", data={"username": "PlayerA"})
+    client.get("/create-room")
+
+    response = client.get("/game", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith("/room")

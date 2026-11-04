@@ -759,6 +759,11 @@ def submit_vote():
         return redirect(
             url_for("rooms.game")
         )
+    # Don't allow voting after the round is resolved
+    if room.round_result:
+        return redirect(
+            url_for("rooms.game")
+        )
 
     # Don't allow voting after cancellation
     if room.game_cancelled:

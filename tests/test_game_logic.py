@@ -1164,3 +1164,187 @@ def test_room_is_deleted_when_last_player_leaves(client):
     # Verify that both the player and room were deleted.
     assert db.session.get(Player, player.id) is None
     assert db.session.get(Room, room_id) is None
+
+
+def test_non_host_cannot_start_next_round(client):
+    # Create a room and its host.
+    client.post("/", data={"username": "Host"})
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+        host_id = session["player_id"]
+
+    # Add another player.
+    with client.session_transaction() as session:
+        session.clear()
+
+    client.post("/", data={"username": "Player2"})
+    client.post("/join-room", data={"room_code": room_code})
+
+    with client.session_transaction() as session:
+        player2_id = session["player_id"]
+
+    # Set up the room as if a round has finished.
+    from models.room import Room
+    from models.player import Player
+    from database import db
+
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        room.game_started = True
+        room.round_result = "A player was eliminated."
+        db.session.commit()
+
+    # Attempt to start the next round as Player 2.
+    response = client.post("/next-round", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith("/game")
+
+    # Verify the round did not advance.
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        assert room.round_number == 1
+
+
+def test_non_host_cannot_start_next_round_after_game_over(client):
+    # Create a room and its host.
+    client.post("/", data={"username": "Host"})
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    # Set up a finished game with a round result.
+    from models.room import Room
+    from database import db
+
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        room.game_started = True
+        room.game_over = True
+        room.round_result = "Mafia wins!"
+        db.session.commit()
+
+    # Attempt to advance the round.
+    response = client.post("/next-round", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith("/game")
+
+    # Verify the round did not advance.
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        assert room.round_number == 1
+
+
+def test_host_cannot_start_next_round_without_result(client):
+    client.post("/", data={"username": "Host"})
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    from models.room import Room
+    from database import db
+
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        room.game_started = True
+        room.round_result = None
+        db.session.commit()
+
+    response = client.post("/next-round", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith("/game")
+
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        assert room.round_number == 1
+
+
+def test_player_cannot_vote_after_round_is_resolved(client):
+    # Create a room and host.
+    client.post("/", data={"username": "Host"})
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    # Add a second player.
+    client.get("/logout")
+    client.post("/", data={"username": "Player2"})
+    client.post("/join-room", data={"room_code": room_code})
+
+    from models.room import Room
+    from models.player import Player
+    from database import db
+
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        room_id = room.id
+        players = Player.query.filter_by(room_id=room_id).all()
+
+        room.game_started = True
+        room.round_result = "Player2 was eliminated!"
+        db.session.commit()
+
+        host_id = players[0].id
+        target_id = players[1].id
+
+    # Log back in as the host.
+    with client.session_transaction() as session:
+        session["player_id"] = host_id
+        session["room_code"] = room_code
+        session["username"] = "Host"
+
+    response = client.post(
+        "/submit-vote",
+        data={"target_id": target_id},
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+
+    # Verify that no vote was recorded.
+    from models.vote import Vote
+
+    with client.application.app_context():
+        assert Vote.query.filter_by(room_id=room_id).count() == 0
+
+
+def test_dead_player_cannot_submit_vote(client):
+    client.post("/", data={"username": "Host"})
+    client.get("/create-room")
+
+    with client.session_transaction() as session:
+        room_code = session["room_code"]
+
+    from models.room import Room
+    from models.player import Player
+    from models.vote import Vote
+    from database import db
+
+    with client.application.app_context():
+        room = Room.query.filter_by(room_code=room_code).first()
+        room_id = room.id
+        player = Player.query.filter_by(room_id=room_id).first()
+
+        room.game_started = True
+        player.is_alive = False
+        db.session.commit()
+
+        player_id = player.id
+
+    response = client.post(
+        "/submit-vote",
+        data={"target_id": player_id},
+        follow_redirects=False
+    )
+
+    assert response.status_code == 302
+
+    with client.application.app_context():
+        assert Vote.query.filter_by(room_id=room_id).count() == 0
