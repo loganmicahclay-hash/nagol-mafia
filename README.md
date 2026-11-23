@@ -147,7 +147,7 @@ The application is currently configured for local development and is not yet int
 
 Future improvements may include:
 
-- Automated tests
+- ~~Automated tests~~
 - Improved server reliability
 - Stronger handling of simultaneous player actions
 - A hosted database
